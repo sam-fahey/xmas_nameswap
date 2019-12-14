@@ -2,9 +2,11 @@ import random
 
 def unique_name(name_list, partner_of=''):
 
+    # create flat list of all names
     list_list = [item if isinstance(item, list) else [item] for item in name_list]
     name_list_flat = [item for sublist in list_list for item in sublist]
 
+    # is this person someone's partner?
     if partner_of == '':
         is_partner = False
     else:
@@ -13,11 +15,13 @@ def unique_name(name_list, partner_of=''):
 
     while True:
 
+        # take input name
         if is_partner: 
             input_name = str(input("Enter the name of %s's partner.\n>>> " % partner_of))
         else: 
             input_name = str(input("\nEnter a name.\n>>> "))
 
+        # only take a name input that isn't already in our list
         if input_name in name_list_flat:
             print("Sorry, %s is already in the list. Please enter unique names." % input_name)
             continue
@@ -25,6 +29,7 @@ def unique_name(name_list, partner_of=''):
             break
 
     return input_name
+
 
 def exchange_names(name_list):
 
