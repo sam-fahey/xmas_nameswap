@@ -1,6 +1,22 @@
-import random
+# A script that works in Python 3 (v3.6)
+#
+# The script returns names for a random gift exchange where
+# each recipient is neither the giver nor the giver's partner.
+#
+# User(s) enter names in the command line, then 'stop'.
+# The script then instructs users to look at the screen
+# one-at-a-time to recieve their recipient.
+
+import random, os
 
 def unique_name(name_list, partner_of=''):
+    '''
+    function compares input name to current name_list to check that the entry is unique
+
+    name_list  : list of names already entered
+
+    partner_of : name of person's partner, if specified
+    '''
 
     # create flat list of all names
     list_list = [item if isinstance(item, list) else [item] for item in name_list]
@@ -17,9 +33,9 @@ def unique_name(name_list, partner_of=''):
 
         # take input name
         if is_partner: 
-            input_name = str(raw_input("Enter the name of %s's partner.\n>>> " % partner_of))
+            input_name = str(input("Enter the name of %s's partner.\n>>> " % partner_of))
         else: 
-            input_name = str(raw_input("\nEnter a name.\n>>> "))
+            input_name = str(input("\nEnter a name (or 'stop').\n>>> "))
 
         # only take a name input that isn't already in our list
         if input_name in name_list_flat:
@@ -32,6 +48,11 @@ def unique_name(name_list, partner_of=''):
 
 
 def exchange_names(name_list):
+    '''
+    function returns a dictionary matching givers to recipients
+
+    name_list : a list of names and/or pairs of names to be exchanged
+    '''
 
     failures = 0
     while True:
@@ -47,7 +68,6 @@ def exchange_names(name_list):
                     partner1 = name[0]
                     partner2 = name[1]
 
-                    print(partner1, partner2, names_to_give)
                     names_to_give1 = names_to_give.copy()
                     try: names_to_give1.remove(partner1)
                     except ValueError: pass
@@ -87,7 +107,26 @@ def exchange_names(name_list):
     return giving_dict
 
 
-print("Add names here, pressing <enter> after each. Enter 'stop' to stop.\n")
+
+def display_exchange(exchange_dictionary):
+    '''
+    function displays results of exchange to users
+
+    exchange_dictionary : dictionary where keys are givers and items are recipients
+    '''
+
+    clear = lambda: os.system('clear')
+    for key in exchange_dictionary.keys():
+
+        clear()
+        nothing  = input("\nPrepared to show %s's recipient. Press ENTER when ready.\n"%(key))
+        print("*** %s, your recipient is %s. ***\n"%(key, exchange_dictionary[key]))
+        nothing = input("Press ENTER to clear the terminal for the next person.")
+
+    clear()
+    print("The exchange is complete.")
+
+print("ENTER names below. ENTER 'stop' to stop.\n")
 
 input_list = []
 
@@ -99,7 +138,7 @@ while input_name != "stop":
         break
 
     while True:
-        partner = str(raw_input("Does this person have a partner? (y/n) >>> "))
+        partner = str(input("Does this person have a partner? (y/n) >>> "))
         if partner not in ['y', 'n']:
             print("Please enter 'y' or 'n'.")
             continue
@@ -112,8 +151,8 @@ while input_name != "stop":
     elif partner == "n":
         input_list.append(input_name)
 
-print("These people will be exchanging names: \n", input_list)
+print("\nThese people will be exchanging names: \n", input_list)
 
 exchange_dictionary = exchange_names(input_list)
 
-print(exchange_dictionary)
+display_exchange(exchange_dictionary)
